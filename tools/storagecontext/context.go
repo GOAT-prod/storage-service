@@ -2,6 +2,7 @@ package storagecontext
 
 import (
 	"context"
+	"net/http"
 	"storage-service/settings"
 
 	"github.com/GOAT-prod/goatlogger"
@@ -12,11 +13,11 @@ type StorageContext struct {
 	logger *goatlogger.Logger
 }
 
-func New() StorageContext {
+func New(r *http.Request) StorageContext {
 	logger := goatlogger.New(settings.GetAppName())
 
 	return StorageContext{
-		ctx:    context.Background(),
+		ctx:    r.Context(),
 		logger: &logger,
 	}
 }

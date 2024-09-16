@@ -17,7 +17,7 @@ create table if not exists materials
     name    text    not null default '',
     country text    not null default '',
     year    date,
-    price   decimal not null default 0.0,
+    price   decimal not null default 0.0
 );
 
 create table if not exists products

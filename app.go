@@ -66,7 +66,8 @@ func (a *App) Stop(ctx context.Context) {
 
 func (a *App) initDatabases() {
 	a.initPostgres()
-	a.initMongo()
+	//TODO: как добавиться монга то расскоментировать
+	//a.initMongo()
 }
 
 func (a *App) initPostgres() {

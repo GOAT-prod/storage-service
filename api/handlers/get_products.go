@@ -11,7 +11,7 @@ import (
 
 func GetProducts(storageService service.StorageService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		storageCtx := storagecontext.New()
+		storageCtx := storagecontext.New(r)
 		storageCtx.SetLogTag("[get-products]")
 
 		limit, err := parseLimit(r)
