@@ -6,8 +6,9 @@ type Config struct {
 }
 
 type Databases struct {
-	Postgres string        `json:"postgres"`
-	MongoDB  MongoSettings `json:"mongo"`
+	NeedMocks bool          `json:"need_mocks"`
+	Postgres  string        `json:"postgres"`
+	MongoDB   MongoSettings `json:"mongo"`
 }
 
 type MongoSettings struct {

@@ -67,7 +67,7 @@ func (a *App) Stop(ctx context.Context) {
 func (a *App) initDatabases() {
 	a.initPostgres()
 	//TODO: как добавиться монга то расскоментировать
-	//a.initMongo()
+	a.initMongo()
 }
 
 func (a *App) initPostgres() {
@@ -95,12 +95,11 @@ func (a *App) initMongo() {
 func (a *App) initRepositories() {
 	a.storageRepository = database.NewStorageRepository(a.postgres)
 
-	//TODO: при первом запуске локально расскоментировать, потом закоментировать иначе будут дубли
-	//if settings.GetEnv() == "local" {
-	//	if err := a.storageRepository.InsertForTest(); err != nil {
-	//		a.logger.Error(err.Error())
-	//	}
-	//}
+	if settings.GetEnv() == settings.LocalEnv() && a.config.Databases.NeedMocks {
+		if err := a.storageRepository.InsertForTest(); err != nil {
+			a.logger.Error(err.Error())
+		}
+	}
 }
 
 func (a *App) initServices() {

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/samber/lo"
+	"fmt"
 	"storage-service/database"
 	"storage-service/domain"
 	"storage-service/domain/mappings"
@@ -9,7 +9,7 @@ import (
 )
 
 type StorageService interface {
-	GetProducts(ctx storagecontext.StorageContext, limit int) ([]domain.ProductInfo, error)
+	GetProducts(ctx storagecontext.StorageContext, limit int, page int) ([]domain.Product, error)
 }
 
 type StorageServiceImpl struct {
@@ -22,43 +22,49 @@ func NewStorageService(repos database.StorageRepository) StorageService {
 	}
 }
 
-func (s *StorageServiceImpl) GetProducts(ctx storagecontext.StorageContext, limit int) ([]domain.ProductInfo, error) {
-	var (
-		products []database.DbProductInfo
-		err      error
-	)
-
-	switch limit {
-	case 0:
-		products, err = s.repo.GetAllProducts(ctx)
-	default:
-		products, err = s.repo.GetLimitProducts(ctx, limit)
-	}
-
+func (s *StorageServiceImpl) GetProducts(ctx storagecontext.StorageContext, limit int, page int) ([]domain.Product, error) {
+	dbProducts, err := s.repo.GetAllProducts(ctx, limit, page*limit)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error getting products: %w", err)
 	}
 
-	productIds := lo.Map(products, func(item database.DbProductInfo, _ int) int {
-		return item.Id
-	})
+	products := make([]domain.Product, 0, len(dbProducts))
 
-	images, err := s.repo.GetImages(ctx, productIds)
-	if err != nil {
-		return nil, err
+	for _, dbProduct := range dbProducts {
+		fullDbProduct := dbProduct
+
+		fullDbProduct.Items, err = s.repo.GetProductItems(ctx, []int{dbProduct.Id})
+		if err != nil {
+			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] items: %s", fullDbProduct.Id, err))
+			continue
+		}
+
+		fullDbProduct.Images, err = s.repo.GetImages(ctx, []int{dbProduct.Id})
+		if err != nil {
+			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] images: %s", fullDbProduct.Id, err))
+			continue
+		}
+
+		fullDbProduct.Materials, err = s.repo.GetMaterials(ctx, []int{dbProduct.Id})
+		if err != nil {
+			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] materials: %s", fullDbProduct.Id, err))
+			continue
+		}
+
+		dbBrand, bErr := s.repo.GetBrands(ctx, []int{dbProduct.BrandId})
+		if bErr != nil {
+			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] brand: %s", fullDbProduct.Id, err))
+			continue
+		}
+
+		dbFactory, fErr := s.repo.GetFactories(ctx, []int{dbProduct.FactoryId})
+		if fErr != nil {
+			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] factory: %s", fullDbProduct.Id, err))
+			continue
+		}
+
+		products = append(products, mappings.ToDomainProduct(fullDbProduct, dbBrand[0], dbFactory[0]))
 	}
 
-	materials, err := s.repo.GetMaterials(ctx, productIds)
-	if err != nil {
-		return nil, err
-	}
-
-	result := mappings.ToProductInfos(products)
-
-	for i := range result {
-		result[i].Images = lo.Map(lo.Filter(images, func(item database.DbImage, _ int) bool { return item.ProductId == result[i].Id }), func(item database.DbImage, _ int) string { return item.Url })
-		result[i].Materials = lo.Map(lo.Filter(materials, func(item database.DbMaterial, _ int) bool { return item.ProductId == result[i].Id }), func(item database.DbMaterial, _ int) string { return item.Name })
-	}
-
-	return result, nil
+	return products, nil
 }

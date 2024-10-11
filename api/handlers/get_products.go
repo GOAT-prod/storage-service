@@ -14,14 +14,9 @@ func GetProducts(storageService service.StorageService) http.HandlerFunc {
 		storageCtx := storagecontext.New(r)
 		storageCtx.SetLogTag("[get-products]")
 
-		limit, err := parseLimit(r)
-		if err != nil {
-			storageCtx.Log().Error(fmt.Sprintf("не удалось распарсить лимит, ошибка: %v", err))
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
+		limit, page := parseQuery(r)
 
-		products, err := storageService.GetProducts(storageCtx, limit)
+		products, err := storageService.GetProducts(storageCtx, limit, page)
 		if err != nil {
 			storageCtx.Log().Error(fmt.Sprintf("не удалось получить список продуктов, ошибка: %v", err))
 			w.WriteHeader(http.StatusBadRequest)
@@ -36,11 +31,9 @@ func GetProducts(storageService service.StorageService) http.HandlerFunc {
 	}
 }
 
-func parseLimit(r *http.Request) (int, error) {
-	limit := r.URL.Query().Get("limit")
-	if limit == "" {
-		return 0, nil
-	}
+func parseQuery(r *http.Request) (int, int) {
+	limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))
+	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
 
-	return strconv.Atoi(limit)
+	return limit, page
 }

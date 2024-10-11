@@ -1,51 +1,67 @@
 -- +goose Up
-create table if not exists clothes_type
-(
-    id   serial primary key,
-    name text not null default ''
-);
-
-create table if not exists clothes_categories
-(
-    id   serial primary key,
-    name text not null default ''
-);
-
-create table if not exists materials
+create table if not exists material
 (
     id      serial primary key,
-    name    text    not null default '',
-    country text    not null default '',
-    year    date,
-    price   decimal not null default 0.0
+    name    text not null default '',
+    country text not null default ''
 );
 
-create table if not exists products
+create table if not exists brand
+(
+    id   serial primary key,
+    name text not null default ''
+);
+
+create table if not exists factory
+(
+    id      serial primary key,
+    name    text not null default '',
+    country text not null default '',
+    city    text not null default '',
+    address text not null default ''
+);
+
+create table if not exists product
 (
     id          serial primary key,
+    brand_id    int references brand (id),
+    factory_id  int references factory (id),
     name        text    not null default '',
     description text    not null default '',
     price       decimal not null default 0.0,
-    discount    decimal not null default 0.0,
+    is_approved bool not null default false, -- только на курсач
+    is_deleted bool not null default false -- только на курсач
+);
+
+create table if not exists product_item
+(
+    id          serial primary key,
+    product_id  int references product (id),
     stock_count int     not null default 0,
     size        int     not null default 0,
-    color       text    not null default '',
+    weight      decimal not null default 0.0,
+    color       text    not null default ''
+);
 
-    type_id     int references clothes_type (id),
-    category_id int references clothes_categories (id),
-    material_id int references materials (id)
+create table if not exists product_material
+(
+    id          serial primary key,
+    product_id  int references product (id),
+    material_id int references material (id)
 );
 
 create table if not exists images
 (
     id         serial primary key,
     url        text,
-    product_id int references products (id)
+    product_id int references product (id)
 );
 
 -- +goose Down
-drop table clothes_type cascade;
-drop table clothes_categories cascade;
-drop table materials cascade;
-drop table products cascade;
-drop table images cascade;
+drop table if exists images;
+drop table if exists product_material;
+drop table if exists product_item;
+drop table if exists product;
+drop table if exists factory;
+drop table if exists brand;
+drop table if exists material;

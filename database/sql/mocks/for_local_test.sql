@@ -1,111 +1,52 @@
-insert into clothes_type (name)
-values ('Кроссовки');
+INSERT INTO material (name, country)
+VALUES ('Leather', 'Italy'),
+       ('Rubber', 'Germany'),
+       ('Textile', 'China'),
+       ('Synthetic', 'USA'),
+       ('Mesh', 'Vietnam');
 
-insert into clothes_categories (name)
-values ('Для бега'),
-       ('Для фитнеса'),
-       ('Для повседневной носки'),
-       ('Для тренажерного зала');
+INSERT INTO brand (name)
+VALUES ('Nike'),
+       ('Adidas'),
+       ('Puma'),
+       ('Reebok'),
+       ('New Balance');
 
-insert into materials(name)
-values ('Текстиль'),
-       ('Резина'),
-       ('Синтетика'),
-       ('Кожа'),
-       ('Замша');
+INSERT INTO factory (name, country, city, address)
+VALUES ('Nike Factory 1', 'Vietnam', 'Ho Chi Minh City', '123 Main St'),
+       ('Adidas Factory', 'China', 'Guangzhou', '456 Second St'),
+       ('Puma Factory', 'Germany', 'Berlin', '789 Third St'),
+       ('Reebok Factory', 'USA', 'Los Angeles', '321 Sunset Blvd'),
+       ('New Balance Factory', 'UK', 'London', '654 Thames Rd');
 
--- Таблица products (товары)
-INSERT INTO products (name, price, description, stock_count, size, color, type_id, category_id)
-VALUES ('Nike Air Zoom Pegasus 37', 8990, 'Удобные кроссовки для бега с мягкой амортизацией.', 10, 40, 'Черные', 1, 1),
-       ('Adidas Ultraboost 21', 11990, 'Кроссовки с технологией Boost для превосходного комфорта.', 10, 40, 'Черные', 1,
-        2),
-       ('Puma RS-X3', 7490, 'Стильные и удобные кроссовки для повседневного использования.', 10, 40, 'Черные', 1, 3),
-       ('Reebok Nano X1', 9990, 'Универсальные кроссовки для тренировок с высокой прочностью.', 10, 40, 'Черные', 1, 4),
-       ('Asics Gel-Kayano 27', 13990, 'Кроссовки с гелевой амортизацией для максимального комфорта.', 10, 40, 'Черные',
-        1, 1),
-       ('Nike Air Max 270', 11490, 'Кроссовки с амортизацией Air Max для комфортной ходьбы.', 10, 40, 'Черные', 1, 3),
-       ('Adidas Yeezy Boost 350 V2', 21990, 'Культовые кроссовки, созданные в сотрудничестве с Kanye West.', 10, 40,
-        'Черные', 1, 3),
-       ('New Balance 990v5', 15990, 'Легендарные кроссовки для ежедневного комфорта и стиля.', 10, 40, 'Черные', 1, 3),
-       ('Reebok Classic Leather', 7990, 'Классические кожаные кроссовки для повседневного стиля.', 10, 40, 'Черные', 1,
-        3),
-       ('Asics Gel-Nimbus 23', 13990, 'Кроссовки для бега с превосходной амортизацией и поддержкой.', 10, 40, 'Черные',
-        1, 1),
-       ('Nike React Infinity Run', 12990, 'Кроссовки с технологией React для комфортного бега.', 10, 40, 'Черные', 1,
-        1),
-       ('Puma Future Rider', 8490, 'Легкие кроссовки для ежедневного использования.', 10, 40, 'Черные', 1, 3),
-       ('New Balance 574', 8990, 'Иконные кроссовки для повседневного стиля.', 10, 40, 'Черные', 1, 3),
-       ('Adidas ZX 2K Boost', 12990, 'Современные кроссовки с амортизацией Boost.', 10, 40, 'Черные', 1, 3),
-       ('Reebok Zig Kinetica', 10990, 'Кроссовки с инновационной подошвой для тренировок.', 10, 40, 'Черные', 1, 2),
-       ('Asics Gel-Quantum 360', 12990, 'Кроссовки с гелевой амортизацией для максимального комфорта.', 10, 40,
-        'Черные', 1, 1),
-       ('Puma RS-X', 8990, 'Стильные кроссовки для города.''Кроссовки', 10, 40, 'Черные', 1, 3),
-       ('Reebok Royal Glide', 6990, 'Классические кроссовки для ежедневного использования.', 10, 40, 'Черные', 1, 3),
-       ('New Balance 997H', 9490, 'Современная версия классических кроссовок 997.', 10, 40, 'Черные', 1, 3),
-       ('Adidas Superstar', 8490, 'Легендарные кроссовки с кожаным верхом и фирменными полосками.', 10, 40, 'Черные', 1,
-        3);
+INSERT INTO product (brand_id, factory_id, name, description, price, is_approved, is_deleted)
+VALUES (1, 1, 'Nike Air Max', 'High-quality running sneakers with Air Max cushioning.', 120.99, true, false),
+       (2, 2, 'Adidas Ultraboost', 'Premium running shoes with Boost technology.', 180.50, true, false),
+       (3, 3, 'Puma Suede Classic', 'Retro-style sneakers with suede upper.', 75.00, true, false),
+       (4, 4, 'Reebok Nano X1', 'Cross-training shoes for all-around performance.', 130.00, true, false),
+       (5, 5, 'New Balance 990v5', 'Classic running shoes made in the USA.', 175.99, true, false);
 
--- Таблица images (изображения товаров)
-INSERT INTO images (product_id, url)
-VALUES (1, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/107/978/001/593/074/2/100060751803b0.jpg'),
-       (2, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/-57/557/167/644/104/600016994811b0.jpg'),
-       (3, 'https://main-cdn.sbermegamarket.ru/mid9/hlr-system/-13/558/000/477/181/030/600019604418b0.jpg'),
-       (4, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/-82/840/499/529/133/4/100048828071b0.jpg'),
-       (5, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/-19/154/389/281/232/6/100058881481b0.jpg'),
-       (6, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/-93/669/763/322/121/6/600016608814b0.jpg'),
-       (7, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/122/042/332/693/074/6/100060756593b0.jpg'),
-       (8, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/-20/597/764/943/152/4/100064190260b0.jpg'),
-       (9, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/199/976/269/971/192/100068523398b0.jpg'),
-       (10, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/199/976/366/071/193/100068523399b0.jpg'),
-       (11, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/-86/440/007/585/223/6/600025967211b0.jpg'),
-       (12, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/-86/495/006/815/193/2/600024426334b0.jpg'),
-       (13, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/199/976/161/961/172/100068523394b0.jpg'),
-       (14, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/199/976/171/151/179/100068523395b0.jpg'),
-       (15, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/-13/558/324/189/181/051/600019604443b0.jpg'),
-       (16, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/-13/558/218/489/181/030/600019604424b0.jpg'),
-       (17, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/-13/558/116/961/181/030/600019604420b0.jpg'),
-       (18, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/-13/558/434/489/181/051/600019604448b0.jpg'),
-       (19, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/-57/557/226/049/144/600016994812b0.jpg'),
-       (20, 'https://main-cdn.sbermegamarket.ru/big3/hlr-system/-57/557/226/049/144/600016994812b0.jpg');
+INSERT INTO product_item (product_id, stock_count, size, weight, color)
+VALUES (1, 50, 42, 0.9, 'Black'),
+       (1, 30, 44, 1.0, 'White'),
+       (2, 40, 43, 0.85, 'Blue'),
+       (2, 35, 45, 0.9, 'Gray'),
+       (3, 25, 40, 0.8, 'Red'),
+       (4, 60, 41, 0.95, 'Green'),
+       (5, 20, 43, 0.88, 'Navy');
 
-insert into product_materials(product_id, material_id)
-values (1, 1),
-       (1, 2),
-       (2, 1),
-       (2, 2),
-       (3, 1),
-       (3, 3),
-       (4, 3),
-       (4, 1),
-       (5, 1),
-       (5, 2),
-       (6, 1),
-       (6, 2),
-       (7, 1),
-       (7, 3),
-       (8, 4),
-       (8, 1),
-       (9, 4),
-       (9, 2),
-       (10, 1),
-       (10, 2),
-       (11, 1),
-       (11, 2),
-       (12, 1),
-       (12, 2),
-       (13, 1),
-       (13, 5),
-       (14, 1),
-       (14, 2),
-       (15, 1),
-       (15, 3),
-       (16, 1),
-       (16, 2),
-       (17, 1),
-       (17, 2),
-       (18, 4),
-       (18, 2),
-       (19, 5),
-       (19, 1),
-       (20, 4),
-       (20, 2);
+INSERT INTO product_material (product_id, material_id)
+VALUES (1, 1), -- Nike Air Max: Leather
+       (1, 2), -- Nike Air Max: Rubber
+       (2, 3), -- Adidas Ultraboost: Textile
+       (2, 2), -- Adidas Ultraboost: Rubber
+       (3, 1), -- Puma Suede Classic: Leather
+       (4, 4), -- Reebok Nano X1: Synthetic
+       (5, 5); -- New Balance 990v5: Mesh
+
+INSERT INTO images (url, product_id)
+VALUES ('https://example.com/images/nike_air_max.jpg', 1),
+       ('https://example.com/images/adidas_ultraboost.jpg', 2),
+       ('https://example.com/images/puma_suede_classic.jpg', 3),
+       ('https://example.com/images/reebok_nano_x1.jpg', 4),
+       ('https://example.com/images/new_balance_990v5.jpg', 5);

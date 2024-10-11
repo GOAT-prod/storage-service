@@ -46,3 +46,7 @@ func GetEnv() ENV {
 
 	return ENV(env)
 }
+
+func LocalEnv() ENV {
+	return _local
+}

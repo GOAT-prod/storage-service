@@ -1,11 +1,12 @@
 {
     "port": 80,
     "databases" : {
+        "need_mocks" : false,
         "mongo": {
             "connection" : "mongodb://localhost:27017",
             "database": "logs",
             "collection" : "storage-service"
         },
-        "postgres": "postgres://default:NlS53IqFXjmP@ep-snowy-scene-a2dmlrbf.eu-central-1.aws.neon.tech:5432/verceldb?sslmode=require"
+        "postgres": "postgres://postgres:postgres@localhost/storage?search_path=public&sslmode=disable"
     }
 }
