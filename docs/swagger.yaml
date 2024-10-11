@@ -1,0 +1,206 @@
+definitions:
+  domain.Brand:
+    properties:
+      Id:
+        description: Id бренда кроссовок
+        type: integer
+      Name:
+        description: Наименование бренда
+        type: string
+    type: object
+  domain.Factory:
+    properties:
+      City:
+        description: Город
+        type: string
+      Country:
+        description: Страна
+        type: string
+      Id:
+        description: Id завода изготовителя
+        type: integer
+      Name:
+        description: Название завода
+        type: string
+      address:
+        description: Конкретный адрес
+        type: string
+    type: object
+  domain.Product:
+    properties:
+      Brand:
+        allOf:
+        - $ref: '#/definitions/domain.Brand'
+        description: Бренд кроссовок
+      Description:
+        description: Описание модели кроссовка
+        type: string
+      Factory:
+        allOf:
+        - $ref: '#/definitions/domain.Factory'
+        description: Завод изготовитель
+      Id:
+        description: Id продукта
+        type: integer
+      Images:
+        description: Картинки
+        items:
+          $ref: '#/definitions/domain.ProductImage'
+        type: array
+      Items:
+        description: Варианты кроссовок
+        items:
+          $ref: '#/definitions/domain.ProductItem'
+        type: array
+      Materials:
+        description: Материалы изготовления
+        items:
+          $ref: '#/definitions/domain.ProductMaterial'
+        type: array
+      Name:
+        description: Название модели кроссовка
+        type: string
+      Price:
+        description: Цена продукта
+        type: number
+    type: object
+  domain.ProductImage:
+    properties:
+      Id:
+        description: Id картинки
+        type: integer
+      ImageUrl:
+        description: Ссылка на ресурс с картинкой
+        type: string
+    type: object
+  domain.ProductItem:
+    properties:
+      Color:
+        description: Цвет
+        type: string
+      Id:
+        description: Id варианта кроссовка
+        type: integer
+      Size:
+        description: Размер
+        type: integer
+      StockCount:
+        description: Кол-во на складе
+        type: integer
+      Weight:
+        description: Вес
+        type: number
+    type: object
+  domain.ProductMaterial:
+    properties:
+      Id:
+        description: Id материала
+        type: integer
+      Name:
+        description: Название материала
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Сервис управления продукцией на складе для goat-logistics
+  title: storage-service
+  version: "1.0"
+paths:
+  /product/{productId}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID продукта для удаления
+        in: path
+        name: productId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Продукт успешно удален
+        "400":
+          description: Ошибка запроса
+      security:
+      - Bearer: []
+      summary: Удаление продукта
+      tags:
+      - products
+  /products:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Количество продуктов на странице
+        in: query
+        name: limit
+        required: true
+        type: integer
+      - description: Номер страницы для пагинации
+        in: query
+        name: page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное получение списка продуктов
+          schema:
+            items:
+              $ref: '#/definitions/domain.Product'
+            type: array
+        "400":
+          description: Ошибка запроса
+      security:
+      - Bearer: []
+      summary: Получение списка продуктов
+      tags:
+      - products
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные нового продукта
+        in: body
+        name: Product
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Продукт успешно добавлен
+        "400":
+          description: Ошибка запроса
+      security:
+      - Bearer: []
+      summary: Добавление нового продукта
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Данные обновляемого продукта
+        in: body
+        name: Product
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Продукт успешно обновлен
+        "400":
+          description: Ошибка запроса
+      security:
+      - Bearer: []
+      summary: Обновление информации о продукте
+      tags:
+      - products
+swagger: "2.0"

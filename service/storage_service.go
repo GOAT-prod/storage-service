@@ -10,6 +10,9 @@ import (
 
 type StorageService interface {
 	GetProducts(ctx storagecontext.StorageContext, limit int, page int) ([]domain.Product, error)
+	SaveProduct(ctx storagecontext.StorageContext, product domain.Product) error
+	RemoveProduct(ctx storagecontext.StorageContext, productId int) error
+	UpdateProduct(ctx storagecontext.StorageContext, product domain.Product) error
 }
 
 type StorageServiceImpl struct {
@@ -23,48 +26,40 @@ func NewStorageService(repos database.StorageRepository) StorageService {
 }
 
 func (s *StorageServiceImpl) GetProducts(ctx storagecontext.StorageContext, limit int, page int) ([]domain.Product, error) {
-	dbProducts, err := s.repo.GetAllProducts(ctx, limit, page*limit)
+	dbProducts, err := s.repo.GetProducts(ctx, limit, page*limit)
 	if err != nil {
 		return nil, fmt.Errorf("error getting products: %w", err)
 	}
 
 	products := make([]domain.Product, 0, len(dbProducts))
 
-	for _, dbProduct := range dbProducts {
-		fullDbProduct := dbProduct
-
-		fullDbProduct.Items, err = s.repo.GetProductItems(ctx, []int{dbProduct.Id})
-		if err != nil {
-			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] items: %s", fullDbProduct.Id, err))
-			continue
-		}
-
-		fullDbProduct.Images, err = s.repo.GetImages(ctx, []int{dbProduct.Id})
-		if err != nil {
-			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] images: %s", fullDbProduct.Id, err))
-			continue
-		}
-
-		fullDbProduct.Materials, err = s.repo.GetMaterials(ctx, []int{dbProduct.Id})
-		if err != nil {
-			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] materials: %s", fullDbProduct.Id, err))
-			continue
-		}
-
-		dbBrand, bErr := s.repo.GetBrands(ctx, []int{dbProduct.BrandId})
+	for i := range dbProducts {
+		dbBrand, bErr := s.repo.GetBrands(ctx, []int{dbProducts[i].BrandId})
 		if bErr != nil {
-			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] brand: %s", fullDbProduct.Id, err))
+			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] brand: %s", dbProducts[i].BrandId, err))
 			continue
 		}
 
-		dbFactory, fErr := s.repo.GetFactories(ctx, []int{dbProduct.FactoryId})
+		dbFactory, fErr := s.repo.GetFactories(ctx, []int{dbProducts[i].FactoryId})
 		if fErr != nil {
-			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] factory: %s", fullDbProduct.Id, err))
+			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] factory: %s", dbProducts[i].FactoryId, err))
 			continue
 		}
 
-		products = append(products, mappings.ToDomainProduct(fullDbProduct, dbBrand[0], dbFactory[0]))
+		products = append(products, mappings.ToDomainProduct(dbProducts[i], dbBrand[0], dbFactory[0]))
 	}
 
 	return products, nil
+}
+
+func (s *StorageServiceImpl) SaveProduct(ctx storagecontext.StorageContext, product domain.Product) error {
+	return s.repo.AddProduct(ctx, mappings.ToDbProduct(product))
+}
+
+func (s *StorageServiceImpl) RemoveProduct(ctx storagecontext.StorageContext, productId int) error {
+	return s.repo.DeleteProduct(ctx, productId)
+}
+
+func (s *StorageServiceImpl) UpdateProduct(ctx storagecontext.StorageContext, product domain.Product) error {
+	return s.repo.UpdateProduct(ctx, mappings.ToDbProduct(product))
 }

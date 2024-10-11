@@ -12,6 +12,10 @@ import (
 	"time"
 )
 
+// @title storage-service
+// @version 1.0
+// @description Сервис управления продукцией на складе для goat-logistics
+
 func main() {
 	decimalSettings()
 

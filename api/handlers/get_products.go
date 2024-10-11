@@ -9,7 +9,19 @@ import (
 	"strconv"
 )
 
-func GetProducts(storageService service.StorageService) http.HandlerFunc {
+// GetProductsHandler
+//
+//	@tags		products
+//	@summary	Получение списка продуктов
+//	@accept		json
+//	@produce	json
+//	@security	Bearer
+//	@param		limit		query		int		true	"Количество продуктов на странице"
+//	@param		page		query		int		true	"Номер страницы для пагинации"
+//	@Success	200			{array}		domain.Product	"Успешное получение списка продуктов"
+//	@Failure	400			"Ошибка запроса"
+//	@Router		/products [get]
+func GetProductsHandler(storageService service.StorageService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		storageCtx := storagecontext.New(r)
 		storageCtx.SetLogTag("[get-products]")

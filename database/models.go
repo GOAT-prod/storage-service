@@ -9,6 +9,8 @@ type Product struct {
 	Name        string          `db:"name"`
 	Description string          `db:"description"`
 	Price       decimal.Decimal `db:"price"`
+	IsApproved  bool            `db:"is_approved"`
+	IsDeleted   bool            `db:"is_deleted"`
 	Items       []ProductItem
 	Materials   []ProductMaterial
 	Images      []ProductImage

@@ -14,6 +14,8 @@ func ToDbProduct(info domain.Product) database.Product {
 		Name:        info.Name,
 		Description: info.Description,
 		Price:       info.Price,
+		IsApproved:  true,
+		IsDeleted:   false,
 		Items:       ToDbProductItems(info.Items, info.Id),
 		Materials:   ToDbProductMaterials(info.Materials, info.Id),
 		Images:      ToDbProductImages(info.Images, info.Id),

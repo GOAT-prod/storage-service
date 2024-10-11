@@ -1,0 +1,317 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Сервис управления продукцией на складе для goat-logistics",
+        "title": "storage-service",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/product/{productId}": {
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Удаление продукта",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID продукта для удаления",
+                        "name": "productId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Продукт успешно удален"
+                    },
+                    "400": {
+                        "description": "Ошибка запроса"
+                    }
+                }
+            }
+        },
+        "/products": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Получение списка продуктов",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Количество продуктов на странице",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Номер страницы для пагинации",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешное получение списка продуктов",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.Product"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка запроса"
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Обновление информации о продукте",
+                "parameters": [
+                    {
+                        "description": "Данные обновляемого продукта",
+                        "name": "Product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Продукт успешно обновлен"
+                    },
+                    "400": {
+                        "description": "Ошибка запроса"
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Добавление нового продукта",
+                "parameters": [
+                    {
+                        "description": "Данные нового продукта",
+                        "name": "Product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Продукт успешно добавлен"
+                    },
+                    "400": {
+                        "description": "Ошибка запроса"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "domain.Brand": {
+            "type": "object",
+            "properties": {
+                "Id": {
+                    "description": "Id бренда кроссовок",
+                    "type": "integer"
+                },
+                "Name": {
+                    "description": "Наименование бренда",
+                    "type": "string"
+                }
+            }
+        },
+        "domain.Factory": {
+            "type": "object",
+            "properties": {
+                "City": {
+                    "description": "Город",
+                    "type": "string"
+                },
+                "Country": {
+                    "description": "Страна",
+                    "type": "string"
+                },
+                "Id": {
+                    "description": "Id завода изготовителя",
+                    "type": "integer"
+                },
+                "Name": {
+                    "description": "Название завода",
+                    "type": "string"
+                },
+                "address": {
+                    "description": "Конкретный адрес",
+                    "type": "string"
+                }
+            }
+        },
+        "domain.Product": {
+            "type": "object",
+            "properties": {
+                "Brand": {
+                    "description": "Бренд кроссовок",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.Brand"
+                        }
+                    ]
+                },
+                "Description": {
+                    "description": "Описание модели кроссовка",
+                    "type": "string"
+                },
+                "Factory": {
+                    "description": "Завод изготовитель",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/domain.Factory"
+                        }
+                    ]
+                },
+                "Id": {
+                    "description": "Id продукта",
+                    "type": "integer"
+                },
+                "Images": {
+                    "description": "Картинки",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.ProductImage"
+                    }
+                },
+                "Items": {
+                    "description": "Варианты кроссовок",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.ProductItem"
+                    }
+                },
+                "Materials": {
+                    "description": "Материалы изготовления",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.ProductMaterial"
+                    }
+                },
+                "Name": {
+                    "description": "Название модели кроссовка",
+                    "type": "string"
+                },
+                "Price": {
+                    "description": "Цена продукта",
+                    "type": "number"
+                }
+            }
+        },
+        "domain.ProductImage": {
+            "type": "object",
+            "properties": {
+                "Id": {
+                    "description": "Id картинки",
+                    "type": "integer"
+                },
+                "ImageUrl": {
+                    "description": "Ссылка на ресурс с картинкой",
+                    "type": "string"
+                }
+            }
+        },
+        "domain.ProductItem": {
+            "type": "object",
+            "properties": {
+                "Color": {
+                    "description": "Цвет",
+                    "type": "string"
+                },
+                "Id": {
+                    "description": "Id варианта кроссовка",
+                    "type": "integer"
+                },
+                "Size": {
+                    "description": "Размер",
+                    "type": "integer"
+                },
+                "StockCount": {
+                    "description": "Кол-во на складе",
+                    "type": "integer"
+                },
+                "Weight": {
+                    "description": "Вес",
+                    "type": "number"
+                }
+            }
+        },
+        "domain.ProductMaterial": {
+            "type": "object",
+            "properties": {
+                "Id": {
+                    "description": "Id материала",
+                    "type": "integer"
+                },
+                "Name": {
+                    "description": "Название материала",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
