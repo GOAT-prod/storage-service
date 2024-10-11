@@ -29,6 +29,7 @@ type App struct {
 	mongo             *mongo.Client
 	postgres          *sqlx.DB
 	storageRepository database.StorageRepository
+	logsRepository    database.LogsRepository
 }
 
 func NewApp(ctx context.Context, config settings.Config, logger goatlogger.Logger) *App {
@@ -66,7 +67,6 @@ func (a *App) Stop(ctx context.Context) {
 
 func (a *App) initDatabases() {
 	a.initPostgres()
-	//TODO: как добавиться монга то расскоментировать
 	a.initMongo()
 }
 
@@ -100,10 +100,12 @@ func (a *App) initRepositories() {
 			a.logger.Error(err.Error())
 		}
 	}
+
+	a.logsRepository = database.NewLogsRepository(a.mongo, a.config.Databases.MongoDB.Database, a.config.Databases.MongoDB.Collection)
 }
 
 func (a *App) initServices() {
-	a.storageService = service.NewStorageService(a.storageRepository)
+	a.storageService = service.NewStorageService(a.storageRepository, a.logsRepository)
 }
 
 func (a *App) initServer() {

@@ -3,10 +3,10 @@
     "databases" : {
         "need_mocks" : false,
         "mongo": {
-            "connection" : "mongodb://localhost:27017",
+            "connection" : "mongodb://mongo:ADzBxufCtjtoLgLEKlpAkeaXcYNPYGft@junction.proxy.rlwy.net:38384",
             "database": "logs",
             "collection" : "storage-service"
         },
-        "postgres": "postgres://postgres:postgres@localhost/storage?search_path=public&sslmode=disable"
+        "postgres": "postgresql://postgres:GpAYTgYKREzkhPtPnfwrogWZGFkpmVvH@autorack.proxy.rlwy.net:48528/railway"
     }
 }

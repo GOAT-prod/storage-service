@@ -20,7 +20,7 @@ func NewServer(ctx context.Context, logger goatlogger.Logger, cfg settings.Confi
 	router.HandleFunc("/ping", handlers.PingHandler()).Methods(http.MethodGet)
 
 	addProductHandlers(router, storageService)
-	addSwaggerHandler(router, cfg)
+	addSwaggerHandler(router)
 
 	return &http.Server{
 		Addr: fmt.Sprintf(":%d", cfg.Port),
@@ -38,6 +38,6 @@ func addProductHandlers(router *mux.Router, storageService service.StorageServic
 	router.HandleFunc("/product/{productId}", handlers.DeleteProductHandler(storageService)).Methods(http.MethodDelete)
 }
 
-func addSwaggerHandler(router *mux.Router, cfg settings.Config) {
-	router.PathPrefix("/swagger/").Handler(handlers.SwaggerHandler(cfg))
+func addSwaggerHandler(router *mux.Router) {
+	router.PathPrefix("/swagger/").Handler(handlers.SwaggerHandler())
 }

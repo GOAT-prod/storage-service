@@ -16,17 +16,29 @@ type StorageService interface {
 }
 
 type StorageServiceImpl struct {
-	repo database.StorageRepository
+	storageRepository database.StorageRepository
+	logsRepository    database.LogsRepository
 }
 
-func NewStorageService(repos database.StorageRepository) StorageService {
+func NewStorageService(sRepos database.StorageRepository, lRepos database.LogsRepository) StorageService {
 	return &StorageServiceImpl{
-		repo: repos,
+		storageRepository: sRepos,
+		logsRepository:    lRepos,
 	}
 }
 
 func (s *StorageServiceImpl) GetProducts(ctx storagecontext.StorageContext, limit int, page int) ([]domain.Product, error) {
-	dbProducts, err := s.repo.GetProducts(ctx, limit, page*limit)
+	defer func() {
+		getProductsParams := struct {
+			Limit int
+			Page  int
+		}{Limit: limit, Page: page}
+		if err := s.logsRepository.Log(ctx, "get products", getProductsParams); err != nil {
+			ctx.Log().Error(fmt.Sprintf("не удалось записать лог: %v", err))
+		}
+	}()
+
+	dbProducts, err := s.storageRepository.GetProducts(ctx, limit, page*limit)
 	if err != nil {
 		return nil, fmt.Errorf("error getting products: %w", err)
 	}
@@ -34,13 +46,13 @@ func (s *StorageServiceImpl) GetProducts(ctx storagecontext.StorageContext, limi
 	products := make([]domain.Product, 0, len(dbProducts))
 
 	for i := range dbProducts {
-		dbBrand, bErr := s.repo.GetBrands(ctx, []int{dbProducts[i].BrandId})
+		dbBrand, bErr := s.storageRepository.GetBrands(ctx, []int{dbProducts[i].BrandId})
 		if bErr != nil {
 			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] brand: %s", dbProducts[i].BrandId, err))
 			continue
 		}
 
-		dbFactory, fErr := s.repo.GetFactories(ctx, []int{dbProducts[i].FactoryId})
+		dbFactory, fErr := s.storageRepository.GetFactories(ctx, []int{dbProducts[i].FactoryId})
 		if fErr != nil {
 			ctx.Log().Error(fmt.Sprintf("error getting product [id %d] factory: %s", dbProducts[i].FactoryId, err))
 			continue
@@ -53,13 +65,32 @@ func (s *StorageServiceImpl) GetProducts(ctx storagecontext.StorageContext, limi
 }
 
 func (s *StorageServiceImpl) SaveProduct(ctx storagecontext.StorageContext, product domain.Product) error {
-	return s.repo.AddProduct(ctx, mappings.ToDbProduct(product))
+	defer func() {
+		if err := s.logsRepository.Log(ctx, "save product", product); err != nil {
+			ctx.Log().Error(fmt.Sprintf("не удалось записать лог: %v", err))
+		}
+	}()
+
+	return s.storageRepository.AddProduct(ctx, mappings.ToDbProduct(product))
 }
 
 func (s *StorageServiceImpl) RemoveProduct(ctx storagecontext.StorageContext, productId int) error {
-	return s.repo.DeleteProduct(ctx, productId)
+	defer func() {
+		deleteParams := struct{ ProductId int }{ProductId: productId}
+		if err := s.logsRepository.Log(ctx, "delete product", deleteParams); err != nil {
+			ctx.Log().Error(fmt.Sprintf("не удалось записать лог: %v", err))
+		}
+	}()
+
+	return s.storageRepository.DeleteProduct(ctx, productId)
 }
 
 func (s *StorageServiceImpl) UpdateProduct(ctx storagecontext.StorageContext, product domain.Product) error {
-	return s.repo.UpdateProduct(ctx, mappings.ToDbProduct(product))
+	defer func() {
+		if err := s.logsRepository.Log(ctx, "update product", product); err != nil {
+			ctx.Log().Error(fmt.Sprintf("не удалось записать лог: %v", err))
+		}
+	}()
+
+	return s.storageRepository.UpdateProduct(ctx, mappings.ToDbProduct(product))
 }
