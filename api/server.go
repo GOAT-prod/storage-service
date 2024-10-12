@@ -15,7 +15,7 @@ import (
 
 func NewServer(ctx context.Context, logger goatlogger.Logger, cfg settings.Config, storageService service.StorageService) *http.Server {
 	router := mux.NewRouter()
-	router.Use(goathttp.CommonJsonMiddleware, goathttp.CORSMiddleware, goathttp.PanicRecoveryMiddleware(logger))
+	router.Use(goathttp.CommonJsonMiddleware, goathttp.CORSMiddleware, goathttp.OptionsMiddleware, goathttp.PanicRecoveryMiddleware(logger))
 
 	router.HandleFunc("/ping", handlers.PingHandler()).Methods(http.MethodGet)
 
