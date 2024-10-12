@@ -30,6 +30,7 @@ func CORSMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add(_accessControlAllowOriginHeader, _allowedOrigins)
 		w.Header().Add(_accessControlAllowMethodsHeader, _allowedMethods)
+		w.Header().Add(_accessControlAllowHeaders, _allowedHeaders)
 
 		next.ServeHTTP(w, r)
 	})
