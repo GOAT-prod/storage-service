@@ -106,6 +106,14 @@ info:
   title: storage-service
   version: "1.0"
 paths:
+  /ping:
+    get:
+      responses:
+        "200":
+          description: pong
+      summary: Проверка сервиса
+      tags:
+      - ping
   /product/{productId}:
     delete:
       consumes:
