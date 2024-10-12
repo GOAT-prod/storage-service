@@ -23,6 +23,11 @@ import (
 //	@Router		/products [put]
 func UpdateProductHandler(storageService service.StorageService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if (*r).Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
 		storageCtx := storagecontext.New(r)
 		storageCtx.SetLogTag("[update-product]")
 
