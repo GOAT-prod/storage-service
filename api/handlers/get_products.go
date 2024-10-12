@@ -20,11 +20,17 @@ import (
 //	@param		page		query		int		true	"Номер страницы для пагинации"
 //	@Success	200			{array}		domain.Product	"Успешное получение списка продуктов"
 //	@Failure	400			"Ошибка запроса"
+//	@Failure	401			"Не авторизован"
 //	@Router		/products [get]
 func GetProductsHandler(storageService service.StorageService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		storageCtx := storagecontext.New(r)
 		storageCtx.SetLogTag("[get-products]")
+
+		if !storageCtx.IsAuthorized() {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 
 		limit, page := parseQuery(r)
 

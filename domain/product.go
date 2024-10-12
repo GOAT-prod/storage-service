@@ -32,7 +32,7 @@ type Factory struct {
 	Name    string `json:"Name"`    // Название завода
 	Country string `json:"Country"` // Страна
 	City    string `json:"City"`    // Город
-	Address string `json:"address"` // Конкретный адрес
+	Address string `json:"Address"` // Конкретный адрес
 }
 
 type ProductImage struct {

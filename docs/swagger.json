@@ -52,6 +52,9 @@
                     },
                     "400": {
                         "description": "Ошибка запроса"
+                    },
+                    "401": {
+                        "description": "Не авторизован"
                     }
                 }
             }
@@ -101,6 +104,9 @@
                     },
                     "400": {
                         "description": "Ошибка запроса"
+                    },
+                    "401": {
+                        "description": "Не авторизован"
                     }
                 }
             },
@@ -137,6 +143,9 @@
                     },
                     "400": {
                         "description": "Ошибка запроса"
+                    },
+                    "401": {
+                        "description": "Не авторизован"
                     }
                 }
             },
@@ -173,6 +182,9 @@
                     },
                     "400": {
                         "description": "Ошибка запроса"
+                    },
+                    "401": {
+                        "description": "Не авторизован"
                     }
                 }
             }
@@ -195,6 +207,10 @@
         "domain.Factory": {
             "type": "object",
             "properties": {
+                "Address": {
+                    "description": "Конкретный адрес",
+                    "type": "string"
+                },
                 "City": {
                     "description": "Город",
                     "type": "string"
@@ -209,10 +225,6 @@
                 },
                 "Name": {
                     "description": "Название завода",
-                    "type": "string"
-                },
-                "address": {
-                    "description": "Конкретный адрес",
                     "type": "string"
                 }
             }
@@ -325,6 +337,13 @@
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

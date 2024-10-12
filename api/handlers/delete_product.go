@@ -20,11 +20,17 @@ import (
 //	@param		productId	path		int		true	"ID продукта для удаления"
 //	@Success	200			"Продукт успешно удален"
 //	@Failure	400			"Ошибка запроса"
+//	@Failure	401			"Не авторизован"
 //	@Router		/product/{productId} [delete]
 func DeleteProductHandler(storageService service.StorageService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		storageCtx := storagecontext.New(r)
 		storageCtx.SetLogTag("[delete-product]")
+
+		if !storageCtx.IsAuthorized() {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 
 		productId, err := parseProductId(r)
 		if err != nil {

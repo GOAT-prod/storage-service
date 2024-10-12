@@ -60,6 +60,9 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Ошибка запроса"
+                    },
+                    "401": {
+                        "description": "Не авторизован"
                     }
                 }
             }
@@ -109,6 +112,9 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Ошибка запроса"
+                    },
+                    "401": {
+                        "description": "Не авторизован"
                     }
                 }
             },
@@ -145,6 +151,9 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Ошибка запроса"
+                    },
+                    "401": {
+                        "description": "Не авторизован"
                     }
                 }
             },
@@ -181,6 +190,9 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Ошибка запроса"
+                    },
+                    "401": {
+                        "description": "Не авторизован"
                     }
                 }
             }
@@ -203,6 +215,10 @@ const docTemplate = `{
         "domain.Factory": {
             "type": "object",
             "properties": {
+                "Address": {
+                    "description": "Конкретный адрес",
+                    "type": "string"
+                },
                 "City": {
                     "description": "Город",
                     "type": "string"
@@ -217,10 +233,6 @@ const docTemplate = `{
                 },
                 "Name": {
                     "description": "Название завода",
-                    "type": "string"
-                },
-                "address": {
-                    "description": "Конкретный адрес",
                     "type": "string"
                 }
             }
@@ -333,6 +345,13 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

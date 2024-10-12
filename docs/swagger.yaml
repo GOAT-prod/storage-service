@@ -10,6 +10,9 @@ definitions:
     type: object
   domain.Factory:
     properties:
+      Address:
+        description: Конкретный адрес
+        type: string
       City:
         description: Город
         type: string
@@ -21,9 +24,6 @@ definitions:
         type: integer
       Name:
         description: Название завода
-        type: string
-      address:
-        description: Конкретный адрес
         type: string
     type: object
   domain.Product:
@@ -131,6 +131,8 @@ paths:
           description: Продукт успешно удален
         "400":
           description: Ошибка запроса
+        "401":
+          description: Не авторизован
       security:
       - Bearer: []
       summary: Удаление продукта
@@ -162,6 +164,8 @@ paths:
             type: array
         "400":
           description: Ошибка запроса
+        "401":
+          description: Не авторизован
       security:
       - Bearer: []
       summary: Получение списка продуктов
@@ -184,6 +188,8 @@ paths:
           description: Продукт успешно добавлен
         "400":
           description: Ошибка запроса
+        "401":
+          description: Не авторизован
       security:
       - Bearer: []
       summary: Добавление нового продукта
@@ -206,9 +212,16 @@ paths:
           description: Продукт успешно обновлен
         "400":
           description: Ошибка запроса
+        "401":
+          description: Не авторизован
       security:
       - Bearer: []
       summary: Обновление информации о продукте
       tags:
       - products
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

@@ -19,11 +19,17 @@ import (
 //	@param		Product	body		domain.Product	true	"Данные нового продукта"
 //	@Success	200		"Продукт успешно добавлен"
 //	@Failure	400		"Ошибка запроса"
+//	@Failure	401		"Не авторизован"
 //	@Router		/products [post]
 func AddProductHandler(storageService service.StorageService) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		storageCtx := storagecontext.New(r)
 		storageCtx.SetLogTag("[add-product]")
+
+		if !storageCtx.IsAuthorized() {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 
 		var product domain.Product
 		if err := goathttp.ReadRequestJson(r, &product); err != nil {

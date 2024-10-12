@@ -1,8 +1,9 @@
 package goathttp
 
 const (
-	_contentTypeHeader = "Content-Type"
-	_contentTypeJSON   = "application/json"
+	_contentTypeHeader   = "Content-Type"
+	_contentTypeJSON     = "application/json"
+	_authorizationHeader = "Authorization"
 
 	_accessControlAllowOriginHeader       = "Access-Control-Allow-Origin"
 	_accessControlAllowMethodsHeader      = "Access-Control-Allow-Methods"
@@ -12,3 +13,7 @@ const (
 	_allowedOrigins = "*" //TODO: как перейдем на сервер поменять разрешенные хосты
 	_allowedMethods = "GET, POST, PUT, DELETE, OPTIONS"
 )
+
+func AuthorizationHeader() string {
+	return _authorizationHeader
+}
