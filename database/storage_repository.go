@@ -15,6 +15,7 @@ type StorageRepository interface {
 	AddProduct(ctx storagecontext.StorageContext, product Product) error
 	UpdateProduct(ctx storagecontext.StorageContext, product Product) error
 	DeleteProduct(ctx storagecontext.StorageContext, productId int) error
+	GetProduct(ctx storagecontext.StorageContext, productId int) (product Product, err error)
 
 	InsertForTest() error
 }
@@ -27,6 +28,26 @@ func NewStorageRepository(db *sqlx.DB) StorageRepository {
 	return &StorageRepositoryImpl{
 		db: db,
 	}
+}
+
+func (r *StorageRepositoryImpl) GetProduct(ctx storagecontext.StorageContext, productId int) (product Product, err error) {
+	if err = r.db.GetContext(ctx.Ctx(), &product, sql.GetProductById, productId); err != nil {
+		return
+	}
+
+	if product.Items, err = r.getProductItems(ctx, []int{productId}); err != nil {
+		return
+	}
+
+	if product.Images, err = r.getImages(ctx, []int{productId}); err != nil {
+		return
+	}
+
+	if product.Materials, err = r.getMaterials(ctx, []int{productId}); err != nil {
+		return
+	}
+
+	return
 }
 
 func (r *StorageRepositoryImpl) GetProducts(ctx storagecontext.StorageContext, limit int, offset int) (products []Product, err error) {

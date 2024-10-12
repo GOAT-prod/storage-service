@@ -29,6 +29,47 @@ const docTemplate = `{
             }
         },
         "/product/{productId}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "Метод получения информации о конкретном продукте по его ID. Требуется авторизация.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Получение информации о продукте",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID продукта",
+                        "name": "productId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Продукт успешно получен",
+                        "schema": {
+                            "$ref": "#/definitions/domain.Product"
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка запроса, не удалось получить продукт"
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован"
+                    }
+                }
+            },
             "delete": {
                 "security": [
                     {
@@ -202,11 +243,11 @@ const docTemplate = `{
         "domain.Brand": {
             "type": "object",
             "properties": {
-                "Id": {
+                "id": {
                     "description": "Id бренда кроссовок",
                     "type": "integer"
                 },
-                "Name": {
+                "name": {
                     "description": "Наименование бренда",
                     "type": "string"
                 }
@@ -215,23 +256,23 @@ const docTemplate = `{
         "domain.Factory": {
             "type": "object",
             "properties": {
-                "Address": {
+                "address": {
                     "description": "Конкретный адрес",
                     "type": "string"
                 },
-                "City": {
+                "city": {
                     "description": "Город",
                     "type": "string"
                 },
-                "Country": {
+                "country": {
                     "description": "Страна",
                     "type": "string"
                 },
-                "Id": {
+                "id": {
                     "description": "Id завода изготовителя",
                     "type": "integer"
                 },
-                "Name": {
+                "name": {
                     "description": "Название завода",
                     "type": "string"
                 }
@@ -240,7 +281,7 @@ const docTemplate = `{
         "domain.Product": {
             "type": "object",
             "properties": {
-                "Brand": {
+                "brand": {
                     "description": "Бренд кроссовок",
                     "allOf": [
                         {
@@ -248,11 +289,11 @@ const docTemplate = `{
                         }
                     ]
                 },
-                "Description": {
+                "description": {
                     "description": "Описание модели кроссовка",
                     "type": "string"
                 },
-                "Factory": {
+                "factory": {
                     "description": "Завод изготовитель",
                     "allOf": [
                         {
@@ -260,36 +301,36 @@ const docTemplate = `{
                         }
                     ]
                 },
-                "Id": {
+                "id": {
                     "description": "Id продукта",
                     "type": "integer"
                 },
-                "Images": {
+                "images": {
                     "description": "Картинки",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/domain.ProductImage"
                     }
                 },
-                "Items": {
+                "items": {
                     "description": "Варианты кроссовок",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/domain.ProductItem"
                     }
                 },
-                "Materials": {
+                "materials": {
                     "description": "Материалы изготовления",
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/domain.ProductMaterial"
                     }
                 },
-                "Name": {
+                "name": {
                     "description": "Название модели кроссовка",
                     "type": "string"
                 },
-                "Price": {
+                "price": {
                     "description": "Цена продукта",
                     "type": "number"
                 }
@@ -298,11 +339,11 @@ const docTemplate = `{
         "domain.ProductImage": {
             "type": "object",
             "properties": {
-                "Id": {
+                "id": {
                     "description": "Id картинки",
                     "type": "integer"
                 },
-                "ImageUrl": {
+                "imageUrl": {
                     "description": "Ссылка на ресурс с картинкой",
                     "type": "string"
                 }
@@ -311,23 +352,23 @@ const docTemplate = `{
         "domain.ProductItem": {
             "type": "object",
             "properties": {
-                "Color": {
+                "color": {
                     "description": "Цвет",
                     "type": "string"
                 },
-                "Id": {
+                "id": {
                     "description": "Id варианта кроссовка",
                     "type": "integer"
                 },
-                "Size": {
+                "size": {
                     "description": "Размер",
                     "type": "integer"
                 },
-                "StockCount": {
+                "stockCount": {
                     "description": "Кол-во на складе",
                     "type": "integer"
                 },
-                "Weight": {
+                "weight": {
                     "description": "Вес",
                     "type": "number"
                 }
@@ -336,11 +377,11 @@ const docTemplate = `{
         "domain.ProductMaterial": {
             "type": "object",
             "properties": {
-                "Id": {
+                "id": {
                     "description": "Id материала",
                     "type": "integer"
                 },
-                "Name": {
+                "name": {
                     "description": "Название материала",
                     "type": "string"
                 }

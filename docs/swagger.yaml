@@ -1,102 +1,102 @@
 definitions:
   domain.Brand:
     properties:
-      Id:
+      id:
         description: Id бренда кроссовок
         type: integer
-      Name:
+      name:
         description: Наименование бренда
         type: string
     type: object
   domain.Factory:
     properties:
-      Address:
+      address:
         description: Конкретный адрес
         type: string
-      City:
+      city:
         description: Город
         type: string
-      Country:
+      country:
         description: Страна
         type: string
-      Id:
+      id:
         description: Id завода изготовителя
         type: integer
-      Name:
+      name:
         description: Название завода
         type: string
     type: object
   domain.Product:
     properties:
-      Brand:
+      brand:
         allOf:
         - $ref: '#/definitions/domain.Brand'
         description: Бренд кроссовок
-      Description:
+      description:
         description: Описание модели кроссовка
         type: string
-      Factory:
+      factory:
         allOf:
         - $ref: '#/definitions/domain.Factory'
         description: Завод изготовитель
-      Id:
+      id:
         description: Id продукта
         type: integer
-      Images:
+      images:
         description: Картинки
         items:
           $ref: '#/definitions/domain.ProductImage'
         type: array
-      Items:
+      items:
         description: Варианты кроссовок
         items:
           $ref: '#/definitions/domain.ProductItem'
         type: array
-      Materials:
+      materials:
         description: Материалы изготовления
         items:
           $ref: '#/definitions/domain.ProductMaterial'
         type: array
-      Name:
+      name:
         description: Название модели кроссовка
         type: string
-      Price:
+      price:
         description: Цена продукта
         type: number
     type: object
   domain.ProductImage:
     properties:
-      Id:
+      id:
         description: Id картинки
         type: integer
-      ImageUrl:
+      imageUrl:
         description: Ссылка на ресурс с картинкой
         type: string
     type: object
   domain.ProductItem:
     properties:
-      Color:
+      color:
         description: Цвет
         type: string
-      Id:
+      id:
         description: Id варианта кроссовка
         type: integer
-      Size:
+      size:
         description: Размер
         type: integer
-      StockCount:
+      stockCount:
         description: Кол-во на складе
         type: integer
-      Weight:
+      weight:
         description: Вес
         type: number
     type: object
   domain.ProductMaterial:
     properties:
-      Id:
+      id:
         description: Id материала
         type: integer
-      Name:
+      name:
         description: Название материала
         type: string
     type: object
@@ -136,6 +136,33 @@ paths:
       security:
       - Bearer: []
       summary: Удаление продукта
+      tags:
+      - products
+    get:
+      consumes:
+      - application/json
+      description: Метод получения информации о конкретном продукте по его ID. Требуется
+        авторизация.
+      parameters:
+      - description: ID продукта
+        in: path
+        name: productId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Продукт успешно получен
+          schema:
+            $ref: '#/definitions/domain.Product'
+        "400":
+          description: Ошибка запроса, не удалось получить продукт
+        "401":
+          description: Пользователь не авторизован
+      security:
+      - Bearer: []
+      summary: Получение информации о продукте
       tags:
       - products
   /products:

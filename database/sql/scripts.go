@@ -3,6 +3,9 @@ package sql
 import _ "embed"
 
 var (
+	//go:embed get_product_by_id.sql
+	GetProductById string
+
 	//go:embed get_products.sql
 	GetProducts string
 

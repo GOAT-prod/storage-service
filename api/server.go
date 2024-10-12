@@ -32,6 +32,7 @@ func NewServer(ctx context.Context, logger goatlogger.Logger, cfg settings.Confi
 }
 
 func addProductHandlers(router *mux.Router, storageService service.StorageService) {
+	router.HandleFunc("/product/{productId}", handlers.GetProductHandler(storageService)).Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/products", handlers.GetProductsHandler(storageService)).Methods(http.MethodGet, http.MethodOptions)
 	router.HandleFunc("/products", handlers.AddProductHandler(storageService)).Methods(http.MethodPost, http.MethodOptions)
 	router.HandleFunc("/products", handlers.UpdateProductHandler(storageService)).Methods(http.MethodPut, http.MethodOptions)

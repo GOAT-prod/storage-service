@@ -13,6 +13,7 @@ type StorageService interface {
 	SaveProduct(ctx storagecontext.StorageContext, product domain.Product) error
 	RemoveProduct(ctx storagecontext.StorageContext, productId int) error
 	UpdateProduct(ctx storagecontext.StorageContext, product domain.Product) error
+	GetProduct(ctx storagecontext.StorageContext, productId int) (domain.Product, error)
 }
 
 type StorageServiceImpl struct {
@@ -25,6 +26,32 @@ func NewStorageService(sRepos database.StorageRepository, lRepos database.LogsRe
 		storageRepository: sRepos,
 		logsRepository:    lRepos,
 	}
+}
+
+func (s *StorageServiceImpl) GetProduct(ctx storagecontext.StorageContext, productId int) (domain.Product, error) {
+	defer func() {
+		getProductParams := struct{ ProductId int }{ProductId: productId}
+		if err := s.logsRepository.Log(ctx, "get product", getProductParams); err != nil {
+			ctx.Log().Error(fmt.Sprintf("не удалось записать лог: %v", err))
+		}
+	}()
+
+	dbProduct, err := s.storageRepository.GetProduct(ctx, productId)
+	if err != nil {
+		return domain.Product{}, err
+	}
+
+	dbBrand, err := s.storageRepository.GetBrands(ctx, []int{dbProduct.BrandId})
+	if err != nil {
+		return domain.Product{}, err
+	}
+
+	dbFactory, err := s.storageRepository.GetFactories(ctx, []int{dbProduct.FactoryId})
+	if err != nil {
+		return domain.Product{}, err
+	}
+
+	return mappings.ToDomainProduct(dbProduct, dbBrand[0], dbFactory[0]), nil
 }
 
 func (s *StorageServiceImpl) GetProducts(ctx storagecontext.StorageContext, limit int, page int) ([]domain.Product, error) {
